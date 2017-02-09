@@ -18,6 +18,7 @@ curl_close ($ch);
 
 echo "Output: ". $server_output;
 
+/*
 $ch = curl_init();
 
 curl_setopt($ch, CURLOPT_URL,"https://www.njit.edu/cp/login.php");
@@ -35,5 +36,5 @@ curl_close ($ch);
 
 
 echo "Output: ". $server_output;
-
+*/
 ?>
