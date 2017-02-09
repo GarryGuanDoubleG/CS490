@@ -3,7 +3,9 @@
 	require 'db.php';
 
 	$db = new DB;
-
+	$username = "";
+	$pw = "";
+	
 	if(array_key_exists('username', $_POST)
 	{
 		$username = $_POST['username'];
