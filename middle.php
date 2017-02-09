@@ -25,7 +25,7 @@ curl_setopt($ch, CURLOPT_POST, 1);
 
 
 curl_setopt($ch, CURLOPT_POSTFIELDS,
-	    "username=".$_POST[‘cplogin’].”&password=".$_POST[‘userid’]);
+	    “userid=".$_POST[‘username’].”&cplogin=".$_POST[‘password’]);
 
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $server_output = curl_exec ($ch);
