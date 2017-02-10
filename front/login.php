@@ -21,6 +21,11 @@ $server_output = curl_exec ($ch);
 curl_close ($ch);
 
 // further processing ....
-echo "Output: ".$server_output;
+if($server_output == "yn")
+	echo "Logged into local DB";
+elseif($server_output == "ny")
+	echo "Logged into NJIT";
+else
+	echo "Username/password incorrect";
 
 ?>
