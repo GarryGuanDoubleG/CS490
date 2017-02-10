@@ -1,8 +1,12 @@
 <?php
 
+if(!isset($_POST['username']) || !isset($_POST['password'])) {
+	return;
+}
+
 $ch = curl_init();
 
-curl_setopt($ch, CURLOPT_URL,"https://web.njit.edu/~as2866/cs490/test.php");
+curl_setopt($ch, CURLOPT_URL,"https://web.njit.edu/~ybp7/CS490/middle.php");
 curl_setopt($ch, CURLOPT_POST, 1);
 
 //data
@@ -17,4 +21,6 @@ $server_output = curl_exec ($ch);
 curl_close ($ch);
 
 // further processing ....
-echo "Output: ". $server_output;
+echo "Output: ".$server_output;
+
+?>
