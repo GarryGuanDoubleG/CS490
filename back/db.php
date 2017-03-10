@@ -25,13 +25,22 @@
 			}
 		}
 
-		function exec_query($username, $password)
-		{			
-			$query = "SELECT * FROM " . $this->table . " WHERE username = '$username' AND password = '$password'";
-			echo "query: $query<br>";
+		function exec_query($query)
+		{	
 			$result = $this->conn->query($query);
 
+
+			if(!$result)
+			{
+				echo "query is " . $query . "\n";
+				echo "Error no result";
+			}
 			return $result;
+		}
+
+		function close()
+		{
+			$this->conn->close();
 		}
 	}
 
