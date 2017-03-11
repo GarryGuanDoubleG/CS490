@@ -1,0 +1,118 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+  <div class="widePage" id="page">
+
+    <script>
+
+    //get check values
+    function getChecks() {
+      var checks = document.getElementsByName('check');
+      var data = "request=maketest&ids=";
+      var counter = 1;
+      for (var i=0, n=checks.length;i<n ;i++) {
+        if(checks[i].style.background == 'rgb(102, 197, 244)') {
+          data += checks[i].value + ",";
+          counter++;
+        }
+      }
+
+      data = data.slice(0, -1);
+
+      if(counter == 1) {
+        alert("Please select at least one question.");
+        return;
+      }
+
+      console.log("data sent: " + data);
+
+      var xhr = new XMLHttpRequest();
+      url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+      xhr.open("post", url, true);
+      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+      // send the collected data
+      xhr.send(data);
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == XMLHttpRequest.DONE) {
+            console.log("received: ");
+            console.log(xhr.responseText);
+        }
+      };
+    }
+
+    //generate page
+    function generatePage(rawJSON) {
+      var html = "<div class=\"card\" style=\"padding: 1px;\">" +
+        "<h1 style=\"text-align: center;\"> Question Bank </h1>" +
+      "</div>";
+
+      var json = JSON.parse(xhr.responseText);
+      console.log(json);
+
+      json.forEach(function(entry) {
+        var params = JSON.parse(entry['parameters']);
+
+        html += "<div class=\"card\">" +
+          "<input type=\"hidden\" name=\"check\" value="+entry['question_id']+" />" +
+          "<p> Write a method called: " + entry['method_name'] + " </p> " +
+          "<p> That takes parameter: " + params['paramType'] + " " + params['paramName'] + "</p> <br>" +
+          "<p> Method description: </p>" +
+          "<p> " + entry['description'] + " </p> <br>" +
+          "<p> It should handle the following test cases: </p>" +
+          "<p> Input: " + entry['test_input'] + " Output: " + entry['test_output'] + " </p>" +
+        "</div>"
+      });
+
+      html += "<button onclick=\"getChecks()\" class=\"popup\"> Submit </button>";
+
+      var page = document.getElementById('page');
+      page.innerHTML = html;
+    }
+
+    var data = "request=getbank";
+
+    // construct an HTTP request
+    var xhr = new XMLHttpRequest();
+    url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+    xhr.open("post", url, true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // send the collected data as JSON
+    xhr.send(data);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+          console.log("returned data: ");
+          generatePage(xhr.responseText);
+          linkCards();
+      }
+    };
+
+    function linkCards() {
+      var cards = document.getElementsByClassName('card');
+      for (var i=0, n=cards.length;i<n ;i++) {
+        cards[i].onclick = function() {
+          if(this.style.background != 'rgb(102, 197, 244)') {
+            this.style.background = 'rgb(102, 197, 244)';
+            this.children[0].style.background = 'rgb(102, 197, 244)';
+          }
+          else {
+            this.style.background = 'white';
+            this.children[0].style.background = 'white';
+          }
+        }
+      }
+    }
+
+    </script>
+
+  </div>
+</body>
+</html>

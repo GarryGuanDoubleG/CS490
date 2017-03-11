@@ -11,7 +11,7 @@ curl_setopt($ch, CURLOPT_POST, 1);
 
 //data
 curl_setopt($ch, CURLOPT_POSTFIELDS,
-	    "username=".$_POST['username']."&password=".$_POST['password']);
+	    "request=login&username=".$_POST['username']."&password=".$_POST['password']);
 
 // receive server response ...
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -19,12 +19,13 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 $server_output = curl_exec ($ch);
 
 curl_close ($ch);
+echo "Server output: ".$server_output."<br>";
 
 // further processing ....
-if($server_output == "yn")
-	echo "Logged into local DB";
-elseif($server_output == "ny")
-	echo "Logged into NJIT";
+if($server_output == "t")
+	header( 'Location: https://web.njit.edu/~as2866/cs490/professor.html' ) ;
+elseif($server_output == "s")
+	header( 'Location: https://web.njit.edu/~as2866/cs490/student.html' ) ;
 else
 	echo "Username/password incorrect";
 

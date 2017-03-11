@@ -1,0 +1,119 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+  <div class="widePage" id="page">
+    <div class="card" style="padding: 1px;">
+      <h1 style="text-align: center;"> Quiz 1 </h1>
+    </div>
+
+    <button onclick="getAnswers()" class="popup"> Submit </button>
+
+  </div>
+
+  <script>
+
+  //start
+  var data = "request=gettest";
+
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+  xhr.open("post", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  // send the collected data as JSON
+  xhr.send(data);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log("returned data: ");
+        var ret = xhr.responseText;
+        console.log(xhr.responseText);
+        if(ret === "not started") {
+          alert("Test not started yet");
+          return;
+        }
+        generatePage(xhr.responseText);
+    }
+  };
+
+  //get check values
+  function getAnswers() {
+    var ids = document.getElementsByName('id');
+    var answers = document.getElementsByName('answer');
+    var headers = document.getElementsByName('methodHeader');
+    var methodNames = document.getElementsByName('methodName');
+    var inputs = document.getElementsByName('input');
+    var outputs = document.getElementsByName('output');
+
+    var data = "request=submittest&";
+    for(var i = 0; i < ids.length; i++) {
+      data += "method_name" + (i+1) + "=" + (methodNames[i].value) + "&";
+      data += "question_id" + (i+1) + "=" + ids[i].value + "&";
+      data += "header" + (i+1) + "=" + headers[i].innerHTML + "&";
+      data += "input" + (i+1) + "=" + inputs[i].value + "&";
+      data += "output" + (i+1) + "=" + outputs[i].value + "&";
+      data += "answer" + (i+1) + "=" + answers[i].value + "&";
+    }
+
+    console.log("data sent: " + data);
+
+    var xhr = new XMLHttpRequest();
+    url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+    xhr.open("post", url, true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // send the collected data
+    xhr.send(data);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+          console.log("received: ");
+          console.log(xhr.responseText);
+      }
+    };
+  }
+
+  function generatePage(rawJSON) {
+
+    var html = "<div class=\"card\" style=\"padding: 1px;\"> " +
+      "<h1 style=\"text-align: center;\"> Quiz 1 </h1> "+
+    "</div>";
+
+    var json = JSON.parse(xhr.responseText);
+    console.log(json);
+    var counter = 0;
+
+    json.forEach(function(entry) {
+      var params = JSON.parse(entry['parameters']);
+      counter++;
+
+      html += "<div class=\"card\">" +
+        "<input type=\"hidden\" name=\"methodName\" value="+entry['method_name']+" />" +
+        "<input type=\"hidden\" name=\"input\" value="+entry['test_input']+" />" +
+        "<input type=\"hidden\" name=\"output\" value="+entry['test_output']+" />" +
+        "<input type=\"hidden\" name=\"id\" value="+entry['question_id']+" />" +
+        "<h2> Problem " + counter + " </h2>"+
+        "<p style=\"margin: 0 0 0 40;\"> " + entry['description'] + "</p> <br>" +
+        "<p name=\"methodHeader\"> public static void " + entry['method_name'] + "(" + params['paramType'] + " " + params['paramName'] + ") { </p> <br>" +
+        "<form><textarea name=\"answer\" cols=\"40\" rows=\"5\" placeholder=\"code here\" required></textarea></form>"+
+        "<p> Input: " + entry['test_input'] + " Output: " + entry['test_output'] + " </p>" +
+      "</div>"
+    });
+
+    html += "<button onclick=\"getAnswers()\" class=\"popup\"> Submit </button>";
+
+    var page = document.getElementById('page');
+    page.innerHTML = html;
+  }
+
+
+
+  </script>
+</body>
+</html>

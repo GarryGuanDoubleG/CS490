@@ -1,0 +1,79 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+  <div class="widePage" id="page">
+    <div class="card" style="padding: 1px;">
+      <h1 style="text-align: center;"> Results </h1>
+    </div>
+
+    <div class="card">
+      <h2 class="split-para"> Problem 1 <span> 8/10 </span></h2> <br>
+      <p style="margin: 0 0 0 40;"> Write a function.</p> <br>
+      <p> Your Answer: </p> <br>
+      <p style="margin: 0 0 0 40;"> wafawfwawaf</p> <br>
+      <p> Feedback: </p> <br>
+      <p style="margin: 0 0 0 40;"> wafawfwawaf</p>
+    </div>
+
+  </div>
+
+  <script>
+
+  var data = "request=getresults";
+
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+  xhr.open("post", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  // send the collected data as JSON
+  xhr.send(data);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log("returned data: ");
+        if(xhr.responseText === "not released") {
+          alert("Test scores not released yet.");
+          return;
+        }
+        generatePage(xhr.responseText);
+        linkCards();
+    }
+  };
+
+  function generatePage(rawJSON) {
+    var html = "<div class=\"card\" style=\"padding: 1px;\">" +
+      "<h1 style=\"text-align: center;\"> Results </h1>" +
+    "</div>";
+
+    var json = JSON.parse(xhr.responseText);
+    console.log(json);
+    counter = 0;
+    json.forEach(function(entry) {
+      var params = JSON.parse(entry['parameters']);
+      counter += 1;
+      html += "<div class=\"card\"> " +
+        "<h2 class=\"split-para\"> Problem " + counter + " <span> " + entry['grade'] + "/10 </span></h2> <br> " +
+        "<p style=\"margin: 0 0 0 40;\"> " + entry['question'] + "</p> <br> " +
+        "<p> Your Answer: </p> <br> " +
+        "<p style=\"margin: 0 0 0 40;\"> " + entry['answer'] + "</p> <br> " +
+        "<p> Feedback: </p> <br> " +
+        "<p style=\"margin: 0 0 0 40;\"> " + entry['comment'] + "</p> " +
+      "</div> ";
+    });
+
+    var page = document.getElementById('page');
+    page.innerHTML = html;
+  }
+
+
+
+  </script>
+</body>
+</html>

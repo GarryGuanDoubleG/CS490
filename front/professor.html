@@ -1,0 +1,72 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+  <div class="narrowPage">
+  <div class="card">
+  <h1> Welcome Professor! </h1>
+  <h3> What would you like to do? </h3>
+  <form action="addQuestion.html">
+    <button class="popup"> Add a new question </button>
+       </form>
+
+ <form action="viewBank.html">
+   <button class="popup"> View the question bank </button>
+ </form>
+
+ <form>
+ <button class="popup" onclick="startTest()"> Start Test </button>
+ </form>
+
+<form>
+ <button class="popup" onclick="releaseScores()"> Release Test Scores </button>
+ </form>
+
+ <script>
+function releaseScores() {
+  var data = "request=releasescores";
+
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+  xhr.open("post", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  // send the collected data as JSON
+  xhr.send(data);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log("returned data: ");
+    }
+  };
+}
+
+function startTest() {
+  var data = "request=starttest";
+
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+  xhr.open("post", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  // send the collected data as JSON
+  xhr.send(data);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log("returned data: ");
+    }
+  };
+}
+ </script>
+
+</div>
+    </div>
+</form>
+</body>
+</html>

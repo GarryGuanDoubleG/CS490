@@ -1,0 +1,88 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <div class="widePage">
+    <div class="card">
+
+      <form id="form" method="post" class="login-form">
+        <h4> Write a method named: </h4>
+        <input type="text" placeholder="method name" name="methodName" required/>
+
+        <h4> With parameter(s): </h4>
+        <input type="text" placeholder="type" name="paramType" required/>
+        <input type="text" placeholder="name" name="paramName" required/>
+
+        <h4> What the function should do and return: </h4>
+        <textarea name="descr" cols="40" rows="5" placeholder="description" required></textarea>
+
+        <h4> Test case(s): </h4>
+        <input type="text" placeholder="input" name="testIn" required/>
+        <input type="text" placeholder="output" name="testOut" required/>
+
+        <button style="margin-top: 40px;" class="popup"> Add question </button>
+
+      </form>
+
+  </div>
+
+</div>
+</form>
+
+
+<script>
+
+function dump(obj) {
+    var out = '';
+    for (var i in obj) {
+        out += i + ": " + obj[i] + "\n";
+    }
+
+    console.log(out);
+}
+
+var form = document.getElementById("form");
+
+form.onsubmit =function (e) {
+  // stop the regular form submission
+  e.preventDefault();
+
+  // collect the form data while iterating over the inputs
+  var data = "request=add&";
+  for(var i = 0; i < form.length; i++) {
+    var input = form[i];
+    if(input.name) {
+      data += input.name;
+      data += "=";
+      data += input.value;
+      if(form.length - i > 2) {
+        data += "&";
+      }
+    }
+  }
+
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+  xhr.open(form.method, url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  // send the collected data as JSON
+  xhr.send(data);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log(xhr.responseText);
+    }
+  };
+};
+</script>
+
+</body>
+</html>

@@ -5,12 +5,12 @@
 </head>
 
 <body>
-  <div class="login-page">
-  <div class="form">
+  <div class="narrowPage">
+    <div class="card">
     <form action="index.php" method="post" class="login-form">
       <input type="text" placeholder="username" name="username" required/>
       <input type="password" placeholder="password" name="password" required/>
-      <button>login</button>
+      <button class="popup">login</button>
     </form>
    <?php require 'login.php';?>
   </div>
