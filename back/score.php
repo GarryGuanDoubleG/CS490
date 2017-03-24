@@ -2,19 +2,15 @@
 	
 	function InsertScore($db, $student_id, $test_id, $question_id, $score, $comment, $student_answer)
 	{
-		echo "Insert score\n";
 		$clear_score = "DELETE FROM StudentScores WHERE test_id = $test_number " . 
 				 "AND question_id = $question_id " .
 				 "AND student_id = $student_id";
 
-		echo "query is " . $clear_score;
 
 		$db->exec_query($clear_score);
 
 		$insert_query = "INSERT INTO StudentScores (student_id, test_id, question_id, score, comment, student_answer)" .
-						"VALUES ($student_id, $test_id, $question_id, $score, $comment, $student_answer)";
-
-		echo "Insert query: " . $insert_query . "\n";
+						"VALUES ($student_id, $test_id, $question_id, $score, '$comment', '$student_answer')";
 
 		$db->exec_query($insert_query); 
 

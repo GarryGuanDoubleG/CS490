@@ -6,8 +6,6 @@
 
 	$db = new DB;
 
-	echo var_dump($_POST);
-
 	switch($_POST["request"])
 	{
 		case "login":
