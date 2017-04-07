@@ -6,11 +6,24 @@
 </head>
 
 <body>
+<<<<<<< Updated upstream
+=======
+
+  <div class="menu">
+    <i type="button" style="float: left" value="Back" class="material-icons md-48" onclick="window.history.back()">arrow_back</i>
+    <p style="width:50%; margin-right:60px; margin-top:5px" id="menu_text"> Quiz 1 </p>
+  </div>
+
+>>>>>>> Stashed changes
   <div class="widePage" id="page">
     <div class="card" style="padding: 1px;">
       <h1 style="text-align: center;"> Quiz 1 </h1>
     </div>
 
+<<<<<<< Updated upstream
+=======
+    <input type="hidden" name="input" value="hello">
+>>>>>>> Stashed changes
     <button onclick="getAnswers()" class="popup"> Submit </button>
 
   </div>
@@ -75,15 +88,24 @@
       if (xhr.readyState == XMLHttpRequest.DONE) {
           console.log("received: ");
           console.log(xhr.responseText);
+<<<<<<< Updated upstream
+=======
+          alert("Test has been submitted.");
+          window.history.back();
+>>>>>>> Stashed changes
       }
     };
   }
 
   function generatePage(rawJSON) {
 
+<<<<<<< Updated upstream
     var html = "<div class=\"card\" style=\"padding: 1px;\"> " +
       "<h1 style=\"text-align: center;\"> Quiz 1 </h1> "+
     "</div>";
+=======
+    var html = "";
+>>>>>>> Stashed changes
 
     var json = JSON.parse(xhr.responseText);
     console.log(json);

@@ -6,6 +6,7 @@
 </head>
 
 <body>
+<<<<<<< Updated upstream
   <div class="widePage" id="page">
     <div class="card" style="padding: 1px;">
       <h1 style="text-align: center;"> Results </h1>
@@ -19,6 +20,15 @@
       <p> Feedback: </p> <br>
       <p style="margin: 0 0 0 40;"> wafawfwawaf</p>
     </div>
+=======
+
+  <div class="menu">
+    <i type="button" style="float: left" value="Back" class="material-icons md-48" onclick="window.history.back()">arrow_back</i>
+    <p style="width:50%; margin-right:60px; margin-top:5px" id="menu_text"> Results </p>
+  </div>
+
+  <div class="widePage" id="page">
+>>>>>>> Stashed changes
 
   </div>
 
@@ -34,28 +44,45 @@
 
   // send the collected data as JSON
   xhr.send(data);
+<<<<<<< Updated upstream
+=======
+  console.log("data sent:");
+  console.log(data);
+>>>>>>> Stashed changes
 
   xhr.onreadystatechange = function() {
     if (xhr.readyState == XMLHttpRequest.DONE) {
         console.log("returned data: ");
+<<<<<<< Updated upstream
+=======
+        console.log(xhr.responseText);
+>>>>>>> Stashed changes
         if(xhr.responseText === "not released") {
           alert("Test scores not released yet.");
           return;
         }
         generatePage(xhr.responseText);
+<<<<<<< Updated upstream
         linkCards();
+=======
+>>>>>>> Stashed changes
     }
   };
 
   function generatePage(rawJSON) {
+<<<<<<< Updated upstream
     var html = "<div class=\"card\" style=\"padding: 1px;\">" +
       "<h1 style=\"text-align: center;\"> Results </h1>" +
     "</div>";
+=======
+    var html = "";
+>>>>>>> Stashed changes
 
     var json = JSON.parse(xhr.responseText);
     console.log(json);
     counter = 0;
     json.forEach(function(entry) {
+<<<<<<< Updated upstream
       var params = JSON.parse(entry['parameters']);
       counter += 1;
       html += "<div class=\"card\"> " +
@@ -63,6 +90,14 @@
         "<p style=\"margin: 0 0 0 40;\"> " + entry['question'] + "</p> <br> " +
         "<p> Your Answer: </p> <br> " +
         "<p style=\"margin: 0 0 0 40;\"> " + entry['answer'] + "</p> <br> " +
+=======
+      counter += 1;
+      html += "<div class=\"card\"> " +
+        "<h2 class=\"split-para\"> Problem " + counter + " <span> " + entry['score'] + "/10 </span></h2> <br> " +
+        "<p style=\"margin: 0 0 0 40;\"> " + entry['description'] + "</p> <br> " +
+        "<p> Your Answer: </p> <br> " +
+        "<p style=\"margin: 0 0 0 40;\"> " + entry['student_answer'] + "</p> <br> " +
+>>>>>>> Stashed changes
         "<p> Feedback: </p> <br> " +
         "<p style=\"margin: 0 0 0 40;\"> " + entry['comment'] + "</p> " +
       "</div> ";

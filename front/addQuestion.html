@@ -3,7 +3,11 @@
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<<<<<<< Updated upstream
 
+=======
+<script src="common.js"></script>
+>>>>>>> Stashed changes
 </head>
 
 <body>
@@ -67,6 +71,7 @@ form.onsubmit =function (e) {
     }
   }
 
+<<<<<<< Updated upstream
   // construct an HTTP request
   var xhr = new XMLHttpRequest();
   url = "https://web.njit.edu/~ybp7/CS490/middle.php";
@@ -81,6 +86,11 @@ form.onsubmit =function (e) {
         console.log(xhr.responseText);
     }
   };
+=======
+  var xhr = serverRequest(data);
+  alert("Question added.");
+  window.history.back();
+>>>>>>> Stashed changes
 };
 </script>
 

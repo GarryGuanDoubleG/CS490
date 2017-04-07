@@ -1,0 +1,150 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="menu">
+    <i type="button" style="float: left" value="Back" class="material-icons md-48" onclick="window.history.back()">arrow_back</i>
+    <p style="width:50%; margin-right:60px; margin-top:5px" id="menu_text"> New Test </p>
+  </div>
+
+  <div style="width:100%">
+  <button onclick="getChecks()" style="width: 30%; display:block; margin:auto; margin-top:30px" class="popup"> Submit </button>
+</div>
+
+  <div class="widePage" style="float:left; width:45%; margin: 0 20;">
+
+    <div class="card" style="padding: 1px;">
+      <input type="hidden" value="static" />
+      <h1 style="text-align:center; margin: 10px;"> BANK </h1>
+    </div>
+
+    <div id="left" style="overflow:scroll; height:80%">
+    </div>
+
+  </div>
+
+  <div class="widePage" style="float:right; width:45%; margin: 0 20;">
+
+    <div class="card" style="padding: 1px;">
+      <input type="hidden" value="static" />
+      <h1 style="text-align:center; margin: 10px;"> SELECTED </h1>
+    </div>
+
+    <div id="right" style="overflow:scroll; height:80%">
+
+    </div>
+
+  </div>
+
+  <script>
+
+  //get check values
+  function getChecks() {
+    var cards = document.getElementsByClassName('card');
+    var data = "request=maketest&ids=";
+    var counter = 1;
+    for (var i=0, n=cards.length;i<n ;i++) {
+      if(cards[i].children[0].value == "right") {
+        data += cards[i].children[1].value + ",";
+        counter++;
+      }
+    }
+
+    data = data.slice(0, -1);
+
+    if(counter == 1) {
+      alert("Please select at least one question.");
+      return;
+    }
+
+    console.log("data sent: " + data);
+
+    var xhr = new XMLHttpRequest();
+    url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+    xhr.open("post", url, true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // send the collected data
+    xhr.send(data);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+          console.log("received: ");
+          console.log(xhr.responseText);
+          alert("New test created!");
+          window.history.back();
+      }
+    };
+  }
+
+  //generate page
+  function generatePage(rawJSON) {
+    var html = "";
+
+    var json = JSON.parse(xhr.responseText);
+    console.log(json);
+
+    json.forEach(function(entry) {
+      var params = JSON.parse(entry['parameters']);
+
+      html += "<div class=\"card\">" +
+        "<input type=\"hidden\" value=\"left\" />" +
+        "<input type=\"hidden\" name=\"check\" value="+entry['question_id']+" />" +
+        "<p> Write a method called: " + entry['method_name'] + " </p> " +
+        "<p> That takes parameter: " + params['paramType'] + " " + params['paramName'] + "</p> <br>" +
+        "<p> Method description: </p>" +
+        "<p> " + entry['description'] + " </p> <br>" +
+        "<p> It should handle the following test cases: </p>" +
+        "<p> Input: " + entry['test_input'] + " Output: " + entry['test_output'] + " </p>" +
+      "</div>"
+    });
+
+    var page = document.getElementById('left');
+    page.innerHTML = html;
+  }
+
+  var data = "request=getbank";
+
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+  xhr.open("post", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  // send the collected data as JSON
+  xhr.send(data);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log("returned data: ");
+        generatePage(xhr.responseText);
+        linkCards();
+    }
+  };
+
+  function linkCards() {
+    var cards = document.getElementsByClassName('card');
+    for (var i=0, n=cards.length;i<n ;i++) {
+      cards[i].onclick = function() {
+        var newParent;
+        if(this.children[0].value == "left") {
+          newParent = document.getElementById('right').appendChild(this);
+          this.children[0].value = "right";
+        }
+        else if(this.children[0].value == "right") {
+          newParent = document.getElementById('left').appendChild(this);
+          this.children[0].value = "left";
+        }
+      }
+    }
+  }
+  </script>
+
+
+</body>
+</html>

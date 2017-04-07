@@ -25,6 +25,13 @@
  <button class="popup" onclick="releaseScores()"> Release Test Scores </button>
  </form>
 
+<<<<<<< Updated upstream
+=======
+ <form action="index.php" class="login-form">
+   <button class="popup"> Logout </button>
+  </form>
+
+>>>>>>> Stashed changes
  <script>
 function releaseScores() {
   var data = "request=releasescores";
@@ -41,6 +48,10 @@ function releaseScores() {
   xhr.onreadystatechange = function() {
     if (xhr.readyState == XMLHttpRequest.DONE) {
         console.log("returned data: ");
+<<<<<<< Updated upstream
+=======
+        alert("Scores have been released.");
+>>>>>>> Stashed changes
     }
   };
 }
@@ -60,6 +71,10 @@ function startTest() {
   xhr.onreadystatechange = function() {
     if (xhr.readyState == XMLHttpRequest.DONE) {
         console.log("returned data: ");
+<<<<<<< Updated upstream
+=======
+        alert("Test has been started.");
+>>>>>>> Stashed changes
     }
   };
 }
