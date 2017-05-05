@@ -6,29 +6,28 @@
 </head>
 
 <body>
-<<<<<<< Updated upstream
-=======
 
   <div class="menu">
-    <i type="button" style="float: left" value="Back" class="material-icons md-48" onclick="window.history.back()">arrow_back</i>
+    <i type="button" style="float: left" value="Back" class="material-icons md-48" id="backButton">arrow_back</i>
     <p style="width:50%; margin-right:60px; margin-top:5px" id="menu_text"> Quiz 1 </p>
   </div>
 
->>>>>>> Stashed changes
   <div class="widePage" id="page">
     <div class="card" style="padding: 1px;">
       <h1 style="text-align: center;"> Quiz 1 </h1>
     </div>
 
-<<<<<<< Updated upstream
-=======
     <input type="hidden" name="input" value="hello">
->>>>>>> Stashed changes
     <button onclick="getAnswers()" class="popup"> Submit </button>
 
   </div>
 
   <script>
+
+  var back = document.getElementById("backButton");
+  back.onclick = function(event) {
+      window.location.href = 'student.html';
+    };
 
   //start
   var data = "request=gettest";
@@ -47,8 +46,8 @@
         console.log("returned data: ");
         var ret = xhr.responseText;
         console.log(xhr.responseText);
-        if(ret === "not started") {
-          alert("Test not started yet");
+        if(ret == "not started") {
+          window.location.href = 'student.html?message=Test_not_released_yet';
           return;
         }
         generatePage(xhr.responseText);
@@ -59,18 +58,10 @@
   function getAnswers() {
     var ids = document.getElementsByName('id');
     var answers = document.getElementsByName('answer');
-    var headers = document.getElementsByName('methodHeader');
-    var methodNames = document.getElementsByName('methodName');
-    var inputs = document.getElementsByName('input');
-    var outputs = document.getElementsByName('output');
 
     var data = "request=submittest&";
     for(var i = 0; i < ids.length; i++) {
-      data += "method_name" + (i+1) + "=" + (methodNames[i].value) + "&";
       data += "question_id" + (i+1) + "=" + ids[i].value + "&";
-      data += "header" + (i+1) + "=" + headers[i].innerHTML + "&";
-      data += "input" + (i+1) + "=" + inputs[i].value + "&";
-      data += "output" + (i+1) + "=" + outputs[i].value + "&";
       data += "answer" + (i+1) + "=" + answers[i].value + "&";
     }
 
@@ -88,24 +79,14 @@
       if (xhr.readyState == XMLHttpRequest.DONE) {
           console.log("received: ");
           console.log(xhr.responseText);
-<<<<<<< Updated upstream
-=======
-          alert("Test has been submitted.");
-          window.history.back();
->>>>>>> Stashed changes
+          window.location.href = 'student.html?message=Test_has_been_submitted';
       }
     };
   }
 
   function generatePage(rawJSON) {
 
-<<<<<<< Updated upstream
-    var html = "<div class=\"card\" style=\"padding: 1px;\"> " +
-      "<h1 style=\"text-align: center;\"> Quiz 1 </h1> "+
-    "</div>";
-=======
     var html = "";
->>>>>>> Stashed changes
 
     var json = JSON.parse(xhr.responseText);
     console.log(json);
@@ -116,19 +97,46 @@
       counter++;
 
       html += "<div class=\"card\">" +
-        "<input type=\"hidden\" name=\"methodName\" value="+entry['method_name']+" />" +
-        "<input type=\"hidden\" name=\"input\" value="+entry['test_input']+" />" +
-        "<input type=\"hidden\" name=\"output\" value="+entry['test_output']+" />" +
-        "<input type=\"hidden\" name=\"id\" value="+entry['question_id']+" />" +
-        "<h2> Problem " + counter + " </h2>"+
-        "<p style=\"margin: 0 0 0 40;\"> " + entry['description'] + "</p> <br>" +
-        "<p name=\"methodHeader\"> public static void " + entry['method_name'] + "(" + params['paramType'] + " " + params['paramName'] + ") { </p> <br>" +
-        "<form><textarea name=\"answer\" cols=\"40\" rows=\"5\" placeholder=\"code here\" required></textarea></form>"+
-        "<p> Input: " + entry['test_input'] + " Output: " + entry['test_output'] + " </p>" +
-      "</div>"
+      "<input type=\"hidden\" name=\"id\" value="+entry['question_id']+" />" +
+      "<h2> Problem " + counter + " </h2>"+
+        "<p> Write a method called <b>" + entry['method_name'] + "</b>";
+
+      if(params['paramName'] != "") {
+        html += " that takes the following parameter(s):<br>"
+
+        var pNames = params['paramName'].split(",");
+        var pTypes = params['paramType'].split(",");
+
+        for(var i = 0; i < pNames.length; i++) {
+          html += "<b>" + pTypes[i] + " ";
+          html += pNames[i] + "</b><br>";
+        }
+      }
+
+      html += "</p> <p> <br>" + entry['description'] + " </p> <br>";
+
+      html += "<form><textarea name=\"answer\" cols=\"40\" rows=\"5\" placeholder=\"code here\" required></textarea></form>";
+
+
+          html += "<p> It should handle the following test case(s): </p>";
+
+
+        var testCases = entry['testcases'];
+        if(testCases != "") {
+          testCases = JSON.parse(testCases);
+          for(var i = 0; i < testCases.length; i++) {
+            html += "<p> <b> Input: " + testCases[i]['inputs'] + " Output: " + testCases[i]['output'] + " </b> </p>";
+          }
+        }
+      html += "</div>";
     });
 
     html += "<button onclick=\"getAnswers()\" class=\"popup\"> Submit </button>";
+
+    html = html.replace(/plus_sign/g, "+");
+    html = html.replace(/minus_sign/g, "-");
+    html = html.replace(/division_sign/g, "/");
+    html = html.replace(/multiply_sign/g, "*");
 
     var page = document.getElementById('page');
     page.innerHTML = html;

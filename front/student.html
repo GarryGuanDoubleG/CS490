@@ -11,13 +11,6 @@
   <h3> What would you like to do? </h2>
   <form action="takeQuiz.html" class="login-form">
     <button class="popup"> Take a quiz </button>
-<<<<<<< Updated upstream
-       </form>
-
- <form action="viewResults.html" class="login-form">
-   <button class="popup"> View quiz results </button>
-      </form>
-=======
   </form>
 
  <form action="viewResults.html" class="login-form">
@@ -28,10 +21,24 @@
     <button class="popup"> Logout </button>
    </form>
 
->>>>>>> Stashed changes
 
       </div>
+
+      <h4 id="message" style="width:100%; text-align:center; color:white; font-size: 30px"></h4>
     </div>
 </form>
+
+<script>
+
+var messageRet = window.location.search;
+if(messageRet) {
+  messageRet = messageRet.split("=");
+  messageRet = messageRet[1].replace(/_/g, " ");
+  console.log(messageRet);
+  var messageSpace = document.getElementById("message");
+  messageSpace.innerText = messageRet;
+}
+
+</script>
 </body>
 </html>

@@ -12,6 +12,20 @@
   max-width: 400px;
 }
 
+th, td{
+  padding: 10px;
+  text-align: center;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+th {
+  background-color: #5377ad;
+  color: white;
+}
+
 .card {
   border-radius: 4px;
   position: relative;
@@ -49,7 +63,7 @@ button.popup {
   cursor: pointer;
 }
 
-form input, form textarea {
+.formInput, form input, form textarea {
   resize: vertical;
   font-family: "Roboto", sans-serif;
   outline: 0;
@@ -58,6 +72,32 @@ form input, form textarea {
   border: 0;
   margin: 0 0 15px;
   padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.formArea2 {
+  resize: vertical;
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 10px;
+  padding: 5px;
+  box-sizing: border-box;
+  font-size: 14px;
+}
+
+.formArea {
+  resize: vertical;
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #FFFFFF;
+  width: 100%;
+  border: 0;
+  margin: 0 0 10px;
+  padding: 5px;
   box-sizing: border-box;
   font-size: 14px;
 }
@@ -84,9 +124,6 @@ button:hover,button:active,button:focus {
   margin-left:10px;
 }
 
-<<<<<<< Updated upstream
-
-=======
 .menu {
   width: 100%;
   height: 60px;
@@ -116,7 +153,6 @@ button:hover,button:active,button:focus {
   background: #66c5f4;
   cursor: pointer;
 }
->>>>>>> Stashed changes
 body {
   background: #2a4a7a; /* fallback for old browsers */
   background: -webkit-linear-gradient(to left, #2a4a7a, #5377ad);

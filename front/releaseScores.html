@@ -1,0 +1,234 @@
+<html>
+
+<head>
+<link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script src="common.js"></script>
+</head>
+
+<body>
+
+  <div class="menu">
+    <i type="button" style="float: left" value="Back" class="material-icons md-48" id="backButton">arrow_back</i>
+    <p style="width:50%; margin-right:60px; margin-top:5px" id="menu_text"> Review Results Before Release </p>
+  </div>
+
+  <div class="widePage" id="page">
+
+  </div>
+
+  <div style="width:100%">
+  <button id="submitButton" onclick="getPage()" style="width: 30%; display:block; margin:auto; margin-bottom:100px" class="popup"> Release Scores </button>
+</div>
+
+  <script>
+
+  var back = document.getElementById("backButton");
+  back.onclick = function(event) {
+      window.location.href = 'professor.html';
+    };
+
+
+  start();
+
+  function start() {
+    var data = "request=getprofresults";
+
+    // construct an HTTP request
+    var xhr = new XMLHttpRequest();
+    url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+    xhr.open("post", url, true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // send the collected data as JSON
+    xhr.send(data);
+    //console.log("data sent:");
+    //console.log(data);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+          console.log("returned data: ");
+          console.log(xhr.responseText);
+          var someText = xhr.responseText;
+          someText = someText.replace(/\s+/g, '');
+          if(someText.charAt(0) == "<") {
+            var page = document.getElementById('page');
+            page.innerHTML = xhr.responseText;
+            switchToEdit();
+            linkScores();
+            return;
+          }
+
+          data = "request=gettest";
+
+          // construct an HTTP request
+          var xhr2 = new XMLHttpRequest();
+          url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+          xhr2.open("post", url, true);
+          xhr2.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+          // send the collected data as JSON
+          xhr2.send(data);
+          //console.log("data sent:");
+          //console.log(data);
+
+          xhr2.onreadystatechange = function() {
+            if (xhr2.readyState == XMLHttpRequest.DONE) {
+                //console.log("returned data: ");
+                //console.log(xhr2.responseText);
+
+                generatePage(xhr.responseText, xhr2.responseText);
+                linkScores();
+            }
+          };
+      }
+    };
+  }
+
+  function generatePage(resultsJSON, testJSON) {
+    var html = "";
+
+    var json = JSON.parse(resultsJSON);
+    var json2 = JSON.parse(testJSON);
+    //console.log(json);
+    //onsole.log(json2);
+
+    for(var i = 0; i < json.length; i++) {
+      var entry = json[i];
+      var entry2 = json2[i];
+      var params = JSON.parse(entry2['parameters']);
+      var block = entry['block'];
+      block = JSON.parse(block);
+      block = block['block'];
+
+
+      html += "<div class=\"card\"> " +
+        "<h2 class=\"split-para\"> Problem " + (i+1) + " <span class=\"papaPoints\"> " + entry['score'] + "/10 </span></h2> <br> " +
+        "<p> Write a method called <b>" + entry2['method_name'] + "</b>";
+
+      if(params['paramName'] != "") {
+        html += " that takes the following parameter(s):<br>"
+
+        var pNames = params['paramName'].split(",");
+        var pTypes = params['paramType'].split(",");
+
+        for(var i = 0; i < pNames.length; i++) {
+          html += "<b>" + pTypes[i] + " ";
+          html += pNames[i] + "</b><br>";
+        }
+      }
+
+        html += "</p> <p> <br>" + entry['description'] + " </p> <br>" +
+
+        "<p> Your Answer: </p> <br> " +
+        "<p style=\"margin: 0 0 0 40;\"> " + entry['student_answer'] + "</p> <br> " +
+        "<p> Grading: </p> <br> " +
+        "<table style=\"width:100%;\"> <tr>" +
+            "<th style=\"width:20%\">Part</th>" +
+            "<th style=\"width:7%;\">Points</th>" +
+            "<th style=\"width:33%\">Grading note</th>" +
+            "<th style=\"width:40%\">Instructor comment</th> </tr>";
+
+        for(var j = 0; j < block.length; j++) {
+          var piece = block[j];
+          html += "<tr>" +
+            "<td>"+piece['part']+"</td>" +
+            "<td><div class=\"point\"> <textarea class=\""
+            if(j%2 == 0) {
+              html += "formArea2";
+            } else {
+              html += "formArea";
+            }
+
+            html += "\" cols=\"2\" rows=\"1\">" + piece['points'] +
+            "</textarea></div></td>" +
+            "<td>"+piece['grader']+"</td>" +
+            "<td><div name=\"comment\"> <textarea class=\""
+            if(j%2 == 0) {
+              html += "formArea2";
+            } else {
+              html += "formArea";
+            }
+
+            html += "\" cols=\"30\" rows=\"1\" placeholder=\"comment...\" ></textarea></div></td>" +
+          "</tr>";
+        }
+
+        html += "</table> </div>";
+    }
+
+    var page = document.getElementById('page');
+    page.innerHTML = html;
+  }
+
+  function linkScores() {
+    var points = document.getElementsByClassName("point");
+    for(var i = 0; i < points.length; i++) {
+      var textIn = points[i].children[0];
+      textIn.onchange=function(e) {
+        var parent = textIn.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode;
+        points = parent.getElementsByClassName("point");
+        var sum = 0;
+        for(var j = 0; j < points.length; j++) {
+          sum += parseInt(points[j].children[0].value);
+        }
+        var scoreArea = parent.getElementsByClassName("papaPoints")[0];
+        var splits = scoreArea.innerHTML.split("/");
+        scoreArea.innerHTML = sum + "/" + splits[1];
+      }
+    }
+  }
+
+  function switchToEdit() {
+      var points = document.getElementsByClassName("point");
+      var comments = document.getElementsByName("comment");
+
+      for(var i = 0; i < points.length; i++) {
+        thePoint = points[i].innerText;
+        var text = "<textarea class=\"";
+        if(i%2 == 0) {
+          text += "formArea2";
+        } else {
+          text += "formArea";
+        }
+        text += "\" cols=\"2\" rows=\"1\">" + thePoint +"</textarea>";
+        points[i].innerHTML = text;
+
+        theComment = comments[i].innerText;
+        text = "<textarea class=\"";
+        if(i%2 == 0) {
+          text += "formArea2";
+        } else {
+          text += "formArea";
+        }
+        text += "\" cols=\"30\" rows=\"1\" placeholder=\"comment...\" >"+theComment+"</textarea>";
+        comments[i].innerHTML = text;
+      }
+  }
+
+  function getPage() {
+    document.getElementById("submitButton").disabled = true;
+      var points = document.getElementsByClassName("point");
+      var comments = document.getElementsByName("comment");
+
+      for(var i = 0; i < points.length; i++) {
+        thePoint = points[i].children[0].value;
+        points[i].innerHTML = "<td>"+thePoint+"</td>";
+
+        theComment = comments[i].children[0].value;
+        comments[i].innerHTML = "<td>"+theComment+"</td>";
+
+      }
+
+      var newPage = document.getElementById("page");
+      var text = newPage.innerHTML;
+      var stuff = "request=submitchanges&body=" + text;
+      console.log(stuff);
+
+      var ret = serverRequest(stuff);
+        window.location.href = 'professor.html?message=Scores_released';
+  }
+
+  </script>
+</body>
+</html>

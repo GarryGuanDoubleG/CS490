@@ -2,89 +2,119 @@
 
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
-<<<<<<< Updated upstream
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-=======
->>>>>>> Stashed changes
 </head>
 
 <body>
-  <div class="widePage" id="page">
 
-    <script>
+  <div class="menu">
+    <i type="button" style="float: left" value="Back" class="material-icons md-48" id="backButton">arrow_back</i>
+    <p style="width:50%; margin-right:60px; margin-top:5px" id="menu_text"> New Test </p>
+  </div>
 
-    //get check values
-    function getChecks() {
-      var checks = document.getElementsByName('check');
-      var data = "request=maketest&ids=";
-      var counter = 1;
-      for (var i=0, n=checks.length;i<n ;i++) {
-        if(checks[i].style.background == 'rgb(102, 197, 244)') {
-          data += checks[i].value + ",";
-          counter++;
-        }
-      }
+  <div style="width:100%">
+  <button onclick="getChecks()" style="width: 30%; display:block; margin:auto; margin-top:30px" class="popup"> Create Test </button>
+</div>
 
-      data = data.slice(0, -1);
+  <div class="widePage" style="float:left; width:45%; margin: 0 20;">
 
-      if(counter == 1) {
-        alert("Please select at least one question.");
-        return;
-      }
+    <div class="card" style="padding: 1px; height:80px">
+      <input type="hidden" value="static" />
 
-      console.log("data sent: " + data);
+      <div style="display:inline-block; margin-left:25px">
 
-      var xhr = new XMLHttpRequest();
-      url = "https://web.njit.edu/~ybp7/CS490/middle.php";
-      xhr.open("post", url, true);
-      xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      </div>
 
-      // send the collected data
-      xhr.send(data);
+      <h1 style="text-align:center;margin:10px"> Question Bank </h1>
 
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState == XMLHttpRequest.DONE) {
-            console.log("received: ");
-            console.log(xhr.responseText);
-<<<<<<< Updated upstream
-=======
-            alert("Test created.");
-            window.history.back();
->>>>>>> Stashed changes
-        }
-      };
-    }
+      <div>
 
-    //generate page
-    function generatePage(rawJSON) {
-      var html = "<div class=\"card\" style=\"padding: 1px;\">" +
-        "<h1 style=\"text-align: center;\"> Question Bank </h1>" +
-      "</div>";
+        <div style="display:inline-block; text-align:center; width: 35%">
+          Sort:
+          <select id="sortSelect">
+            <option value="0">None</option>
+            <option value="1">Difficulty</option>
+            <option value="2">Type</option>
+          </select>
 
-      var json = JSON.parse(xhr.responseText);
-      console.log(json);
+          <select id="sortDir">
+            <option value="0">Asc</option>
+            <option value="1">Desc</option>
+          </select>
+        </div>
 
-      json.forEach(function(entry) {
-        var params = JSON.parse(entry['parameters']);
 
-        html += "<div class=\"card\">" +
-          "<input type=\"hidden\" name=\"check\" value="+entry['question_id']+" />" +
-          "<p> Write a method called: " + entry['method_name'] + " </p> " +
-          "<p> That takes parameter: " + params['paramType'] + " " + params['paramName'] + "</p> <br>" +
-          "<p> Method description: </p>" +
-          "<p> " + entry['description'] + " </p> <br>" +
-          "<p> It should handle the following test cases: </p>" +
-          "<p> Input: " + entry['test_input'] + " Output: " + entry['test_output'] + " </p>" +
-        "</div>"
-      });
+        <div style="display:inline-block; width: 50%; text-align: center" >
+          Filter:
+          <select id="filterSelect">
+            <option value="0">None</option>
+            <option value="1">Difficulty</option>
+            <option value="2">Type</option>
+            <option value="3">Keyword</option>
+          </select>
+          <input id="filterText" style="width:100px">
+          </input>
+        </div>
 
-      html += "<button onclick=\"getChecks()\" class=\"popup\"> Submit </button>";
+        <div style="display:inline-block; width: 12%; text-align: center">
+          <button onclick="filterSelection()"> Select </button>
+        </div>
 
-      var page = document.getElementById('page');
-      page.innerHTML = html;
-    }
+      </div>
 
+    </div>
+
+    <div id="left" style="overflow:scroll; height:80%">
+
+    </div>
+
+  </div>
+
+  <div class="widePage" style="float:right; width:45%; margin: 0 20;">
+
+    <div class="card" style="padding: 1px; height:80px">
+      <input type="hidden" value="static" />
+      <h1 style="text-align:center; margin: 10px;"> Selected Questions </h1>
+    </div>
+
+    <div id="right" style="overflow:scroll; height:80%">
+
+    </div>
+
+  </div>
+
+  <script>
+  filterSelection();
+  linkCards();
+
+  var back = document.getElementById("backButton");
+  back.onclick = function(event) {
+      window.location.href = 'professor.html';
+    };
+
+  function filterSelection() {
     var data = "request=getbank";
+
+    var sort = document.getElementById("sortSelect");
+    var sortDir = document.getElementById("sortDir");
+    var filter = document.getElementById("filterSelect");
+    var filterText = document.getElementById("filterText");
+
+    data += "&sort=";
+    data += sort.options[sort.selectedIndex].text;
+
+    data += "&filter=";
+    data += filter.options[filter.selectedIndex].text;
+
+    data += "&ascending=";
+    if(sortDir.selectedIndex == 0) {
+      data += "true";
+    } else {
+      data += "false";
+    }
+
+    data += "&filterText=";
+    data += filterText.value;
 
     // construct an HTTP request
     var xhr = new XMLHttpRequest();
@@ -98,29 +128,148 @@
     xhr.onreadystatechange = function() {
       if (xhr.readyState == XMLHttpRequest.DONE) {
           console.log("returned data: ");
-          generatePage(xhr.responseText);
+          console.log(xhr.responseText);
+          populateBank(xhr.responseText);
           linkCards();
       }
     };
+  }
 
-    function linkCards() {
-      var cards = document.getElementsByClassName('card');
-      for (var i=0, n=cards.length;i<n ;i++) {
-        cards[i].onclick = function() {
-          if(this.style.background != 'rgb(102, 197, 244)') {
-            this.style.background = 'rgb(102, 197, 244)';
-            this.children[0].style.background = 'rgb(102, 197, 244)';
-          }
-          else {
-            this.style.background = 'white';
-            this.children[0].style.background = 'white';
-          }
+  //get check values
+  function getChecks() {
+    var cards = document.getElementsByClassName('card');
+    var data = "request=maketest";
+    var idList = "&ids=";
+    var pointsList = "&points=";
+    var counter = 1;
+    for (var i=0, n=cards.length;i<n ;i++) {
+      if(cards[i].children[0].value == "right") {
+        idList += cards[i].children[1].value;
+        idList += ",";
+
+        var point = cards[i].getElementsByClassName("formInput");
+        point = point[0].value;
+        if(point == "") {
+          alert("Please make sure all questions have a point value.");
+          return;
+        } else if(point < 0 || point > 100) {
+          alert("Please make sure all questions have a valid point amount.");
+          return;
         }
+
+        pointsList += point;
+        pointsList += ",";
+        counter++;
       }
     }
 
-    </script>
+    idList = idList.slice(0, -1);
+    pointsList = pointsList.slice(0, -1);
 
-  </div>
+    data += idList;
+    data += pointsList;
+
+    if(counter == 1) {
+      alert("Please select at least one question.");
+      return;
+    }
+
+    console.log("data sent: " + data);
+
+    var xhr = new XMLHttpRequest();
+    url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+    xhr.open("post", url, true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+    // send the collected data
+    xhr.send(data);
+
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == XMLHttpRequest.DONE) {
+          console.log("received: ");
+          console.log(xhr.responseText);
+          window.location.href = 'professor.html?message=New_test_created';
+      }
+    };
+  }
+
+  //generate page
+  function populateBank(rawJSON) {
+    var html = "";
+
+    var json = JSON.parse(rawJSON);
+    console.log(json);
+
+    json.forEach(function(entry) {
+      var params = JSON.parse(entry['parameters']);
+
+      html += "<div class=\"card\">" +
+        "<input type=\"hidden\" value=\"left\" />" +
+        "<input type=\"hidden\" name=\"check\" value="+entry['question_id']+" />" +
+        "<div class=\"points\"> </div>" +
+        "<img src=\"ic_swap.png\"  style=\"width:30px; height:30px; float:right\"/>" +
+        "<div style=\"padding-right:50px\"> <p style=\"display:inline-block;\"> Question type: "+ entry['type'] + "</p>" +
+        "<p style=\"display:inline-block; float:right\"> Difficulty: "+ entry['difficulty'] + "</p> </div><br>" +
+        "<p> Write a method called <b>" + entry['method_name'] + "</b>";
+
+      if(params['paramName'] != "") {
+        html += " that takes the following parameter(s):<br>"
+
+        var pNames = params['paramName'].split(",");
+        var pTypes = params['paramType'].split(",");
+
+        for(var i = 0; i < pNames.length; i++) {
+          html += "<b>" + pTypes[i] + " ";
+          html += pNames[i] + "</b><br>";
+        }
+      }
+
+        html += "</p> <p> <br>" + entry['description'] + " </p> <br>" +
+          "<p> It should handle the following test case(s): </p>";
+
+
+        var testCases = entry['testcases'];
+        if(testCases != "") {
+          testCases = JSON.parse(testCases);
+          for(var i = 0; i < testCases.length; i++) {
+            html += "<p> <b> Input: " + testCases[i]['inputs'] + " Output: " + testCases[i]['output'] + " </b> </p>";
+          }
+        }
+      html += "</div>";
+    });
+
+    var page = document.getElementById('left');
+    page.innerHTML = html;
+  }
+
+  function linkCards() {
+    var cards = document.getElementsByClassName('card');
+    for (var i=0, n=cards.length;i<n ;i++) {
+      var button = cards[i].getElementsByTagName('img');
+      if(button.length == 0)
+        continue;
+
+      button[0].onclick = function() {
+        var newParent;
+        if(this.parentNode.children[0].value == "left") {
+          newParent = document.getElementById('right').appendChild(this.parentNode);
+          this.parentNode.children[0].value = "right";
+
+          var points = this.parentNode.getElementsByClassName("points");
+          points[0].innerHTML = "Points (0-100): <input class=\"formInput\" min=\"0\" max=\"100\" style=\"width:80px\" type=\"number\" />";
+        }
+        else if(this.parentNode.children[0].value == "right") {
+          var points = this.parentNode.getElementsByClassName("points");
+          points[0].innerHTML = "";
+
+          newParent = document.getElementById('left').appendChild(this.parentNode);
+          this.parentNode.children[0].value = "left";
+        }
+      }
+    }
+  }
+  </script>
+
+
 </body>
 </html>

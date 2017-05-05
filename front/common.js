@@ -6,13 +6,13 @@ function serverRequest(data) {
 
   // send the collected data as JSON
   xhr.send(data);
-  console.log("sent data: ");
-  console.log(data);
+  //console.log("sent data: ");
+  //console.log(data);
 
   xhr.onreadystatechange = function() {
     if (xhr.readyState == XMLHttpRequest.DONE) {
-        console.log("returned data: ");
-        console.log(xhr.responseText);
+        //console.log("returned data: ");
+        //console.log(xhr.responseText);
         return xhr.responseText;
     }
   };

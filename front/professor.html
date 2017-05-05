@@ -17,44 +17,31 @@
    <button class="popup"> View the question bank </button>
  </form>
 
- <form>
- <button class="popup" onclick="startTest()"> Start Test </button>
+
+ <button style="margin-bottom:15px" class="popup" onclick="startTest()"> Start Test </button>
+
+<form action="releaseScores.html">
+ <button class="popup"> Release Test Scores </button>
  </form>
 
-<form>
- <button class="popup" onclick="releaseScores()"> Release Test Scores </button>
- </form>
-
-<<<<<<< Updated upstream
-=======
  <form action="index.php" class="login-form">
    <button class="popup"> Logout </button>
   </form>
 
->>>>>>> Stashed changes
+</div>
+<h4 id="message" style="width:100%; text-align:center; color:white; font-size: 30px"></h4>
+    </div>
+
  <script>
-function releaseScores() {
-  var data = "request=releasescores";
 
-  // construct an HTTP request
-  var xhr = new XMLHttpRequest();
-  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
-  xhr.open("post", url, true);
-  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-  // send the collected data as JSON
-  xhr.send(data);
-
-  xhr.onreadystatechange = function() {
-    if (xhr.readyState == XMLHttpRequest.DONE) {
-        console.log("returned data: ");
-<<<<<<< Updated upstream
-=======
-        alert("Scores have been released.");
->>>>>>> Stashed changes
-    }
-  };
-}
+ var messageRet = window.location.search;
+ if(messageRet) {
+   messageRet = messageRet.split("=");
+   messageRet = messageRet[1].replace(/_/g, " ");
+   console.log(messageRet);
+   var messageSpace = document.getElementById("message");
+   messageSpace.innerText = messageRet;
+ }
 
 function startTest() {
   var data = "request=starttest";
@@ -71,17 +58,13 @@ function startTest() {
   xhr.onreadystatechange = function() {
     if (xhr.readyState == XMLHttpRequest.DONE) {
         console.log("returned data: ");
-<<<<<<< Updated upstream
-=======
-        alert("Test has been started.");
->>>>>>> Stashed changes
+        var messageSpace = document.getElementById("message");
+        messageSpace.innerText = "Test Started";
     }
   };
 }
  </script>
 
-</div>
-    </div>
 </form>
 </body>
 </html>

@@ -3,44 +3,231 @@
 <head>
 <link rel="stylesheet" type="text/css" href="style.css">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<<<<<<< Updated upstream
-
-=======
 <script src="common.js"></script>
->>>>>>> Stashed changes
 </head>
 
 <body>
 
-  <div class="widePage">
-    <div class="card">
+  <div class="menu">
+    <i type="button" style="float: left" value="Back" class="material-icons md-48" id="backButton">arrow_back</i>
+    <p style="width:50%; margin-right:60px; margin-top:5px" id="menu_text"> Create a New Question </p>
+  </div>
 
-      <form id="form" method="post" class="login-form">
-        <h4> Write a method named: </h4>
-        <input type="text" placeholder="method name" name="methodName" required/>
+<div class="widePage" style="float:right; width:44%; margin-right:20px;">
 
-        <h4> With parameter(s): </h4>
-        <input type="text" placeholder="type" name="paramType" required/>
-        <input type="text" placeholder="name" name="paramName" required/>
+  <div class="card" style="padding: 1px; height:80px">
+    <input type="hidden" value="static" />
 
-        <h4> What the function should do and return: </h4>
-        <textarea name="descr" cols="40" rows="5" placeholder="description" required></textarea>
+    <div style="display:inline-block; margin-left:25px">
 
-        <h4> Test case(s): </h4>
-        <input type="text" placeholder="input" name="testIn" required/>
-        <input type="text" placeholder="output" name="testOut" required/>
+    </div>
 
-        <button style="margin-top: 40px;" class="popup"> Add question </button>
+    <h1 style="text-align:center;margin:10px"> Existing Questions </h1>
 
-      </form>
+    <div>
+
+      <div style="display:inline-block; text-align:center; width: 35%">
+        Sort:
+        <select id="sortSelect">
+          <option value="0">None</option>
+          <option value="1">Difficulty</option>
+          <option value="2">Type</option>
+        </select>
+
+        <select id="sortDir">
+          <option value="0">Asc</option>
+          <option value="1">Desc</option>
+        </select>
+
+      </div>
+
+
+      <div style="display:inline-block; width: 50%; text-align: center" >
+        Filter:
+        <select id="filterSelect">
+          <option value="0">None</option>
+          <option value="1">Difficulty</option>
+          <option value="2">Type</option>
+          <option value="3">Keyword</option>
+        </select>
+        <input style="width:100px" id="filterText">
+        </input>
+      </div>
+
+      <div style="display:inline-block; width: 12%; text-align: center">
+        <button onclick="filterSelection()"> Select </button>
+      </div>
+
+    </div>
 
   </div>
 
+  <div id="left" style="overflow:scroll; height:80%">
+  </div>
+
 </div>
-</form>
+
+<div class="widePage" style="float:left; width:50%; margin-left:20px;">
+
+  <div class="card" style="padding: 1px; height:80px">
+    <input type="hidden" value="static" />
+    <h1 style="text-align:center; margin: 10px;"> New Question </h1>
+  </div>
+
+  <div class="card">
+
+    <form id="form" method="post" class="login-form">
+      <div>
+        <div style="width:48%; display:inline-block">
+          <h4> Write a method named: </h4>
+          <input type="text" placeholder="method name" name="methodName" required/>
+        </div>
+
+        <div style="width:48%; margin-left:10px; display:inline-block">
+          <h4> Return type (optional): </h4>
+          <input type="text" placeholder="return type" name="returnType" />
+        </div>
+
+
+      </div>
+
+      <div style="margin-bottom:10px">
+
+        <div style="width:48%; display:inline-block">
+          <h4> Question Type: </h4>
+          <input type="text" placeholder="question type" name="type" required/>
+        </div>
+
+        <div style="width:48%; margin-left:10px; display:inline-block">
+          <h4> Question Difficulty: </h4>
+          <input type="text" placeholder="question difficulty" name="difficulty" required/>
+        </div>
+
+      </div>
+
+      <h4> With
+        <select id="paramselect" onchange="generateThings()">
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      parameter(s): </h4>
+
+      <div id="paramContainer">
+      </div>
+
+      <h4> What the method should do and return: </h4>
+      <textarea name="descr" cols="40" rows="5" placeholder="The method should..." required></textarea>
+
+      <h4> With
+        <select id="caseselect" onchange="generateThings()">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+        test case(s): </h4>
+      <div id=caseContainer>
+      </div>
+
+      <button style="margin-top: 40px;" class="popup" id="button">Add question</button>
+
+    </form>
+</div>
+
+  </div>
+</div>
 
 
 <script>
+generateThings();
+filterSelection();
+
+var back = document.getElementById("backButton");
+back.onclick = function(event) {
+    window.location.href = 'professor.html';
+  };
+
+function populateBank(rawJSON) {
+  var html = "";
+
+  var json = JSON.parse(rawJSON);
+  console.log(json);
+
+  json.forEach(function(entry) {
+    var params = JSON.parse(entry['parameters']);
+
+    html += "<div class=\"card\">" +
+      "<input type=\"hidden\" value=\"left\" />" +
+      "<div class=\"points\"> </div>" +
+      "<div style=\"padding-right:50px\"> <p style=\"display:inline-block;\"> Question type: "+ entry['type'] + "</p>" +
+      "<p style=\"display:inline-block; float:right\"> Difficulty: "+ entry['difficulty'] + "</p> </div><br>" +
+      "<p> Write a method called <b>" + entry['method_name'] + "</b>";
+
+    if(params['paramName'] != "") {
+      html += " that takes the following parameter(s):<br>"
+
+      var pNames = params['paramName'].split(",");
+      var pTypes = params['paramType'].split(",");
+
+      for(var i = 0; i < pNames.length; i++) {
+        html += "<b>" + pTypes[i] + " ";
+        html += pNames[i] + "</b><br>";
+      }
+    }
+
+      html += "</p> <p> <br>" + entry['description'] + " </p> <br>" +
+        "<p> It should handle the following test case(s): </p>";
+
+
+      var testCases = entry['testcases'];
+      if(testCases != "") {
+        testCases = JSON.parse(testCases);
+        for(var i = 0; i < testCases.length; i++) {
+          html += "<p> <b> Input: " + testCases[i]['inputs'] + " Output: " + testCases[i]['output'] + " </b> </p>";
+        }
+      }
+    html += "</div>";
+  });
+
+  var page = document.getElementById('left');
+
+  page.innerHTML = html;
+}
+
+function generateThings() {
+
+  var params = document.getElementById("paramselect").value;
+  var cases = document.getElementById("caseselect").value;
+
+  var paramParent = document.getElementById("paramContainer");
+  var caseParent = document.getElementById("caseContainer");
+  var replacement = "";
+  for(var i = 0; i < params; i++) {
+    replacement += "<input type=\"text\" placeholder=\"type\" name=\"paramType\" required style=\"width:30%\"/>" +
+    "<input type=\"text\" placeholder=\"name\" name=\"paramName\" required style=\"width:69%; margin-left:5px\"/>";
+  }
+  paramParent.innerHTML = replacement;
+
+  var width = 65/params;
+
+  replacement = "";
+
+  var padding = "0px";
+  if(params == 0)
+    padding = "5px";
+
+  for(var i = 0; i < cases; i++) {
+    for(var j = 0; j < params; j++) {
+      replacement += "<input type=\"text\" placeholder=\"param "+(j+1)+"\" name=\"testIn\" required style=\"margin-right:5px; width:"+width+"%\"/>";
+    }
+    replacement += "<input type=\"text\" placeholder=\"output\" name=\"testOut\" required style=\"width:30%; margin-right:"+padding+"\"/>";
+  }
+
+  caseParent.innerHTML = replacement;
+}
 
 function dump(obj) {
     var out = '';
@@ -57,25 +244,128 @@ form.onsubmit =function (e) {
   // stop the regular form submission
   e.preventDefault();
 
+  var theButton = document.getElementById("button");
+  if(!theButton.textContent.includes("Add")) {
+    location.reload();
+    return;
+  }
+
+
+
   // collect the form data while iterating over the inputs
   var data = "request=add&";
+
   for(var i = 0; i < form.length; i++) {
     var input = form[i];
     if(input.name) {
+      if(input.name == "paramType" || input.name == "paramName" || input.name == "testIn" || input.name == "testOut") {
+        continue;
+      }
       data += input.name;
       data += "=";
       data += input.value;
-      if(form.length - i > 2) {
-        data += "&";
-      }
+      data += "&";
     }
   }
 
-<<<<<<< Updated upstream
+  var paramTypes = document.getElementsByName("paramType");
+  var paramNames = document.getElementsByName("paramName");
+
+  //TODO: switch to paramtypes="1,2,3,4" & paramNames="a,b,c,d"
+
+  data += "paramType=";
+  for(var i = 0; i < paramTypes.length; i++) {
+    data += paramTypes[i].value;
+    data += ",";
+  }
+  data = data.slice(0, -1);
+
+  data += "&paramName=";
+  for(var i = 0; i < paramNames.length; i++) {
+    data += paramNames[i].value;
+    data += ",";
+  }
+
+  data = data.slice(0, -1);
+
+  var testIns = document.getElementsByName("testIn");
+  var testOuts = document.getElementsByName("testOut");
+
+  var inputs = "";
+  var outCounter = 0;
+  var testcases = [];
+  var testcase = {};
+  for(var i = 0; i < testIns.length; i++) {
+
+    inputs += testIns[i].value;
+
+    if( (i+1) % paramNames.length == 0) {
+      testcase["inputs"] = inputs;
+      testcase["output"] = testOuts[outCounter].value;
+      outCounter++;
+      testcases.push(testcase);
+      testcase = {};
+      inputs = "";
+    }
+    else {
+      inputs += ",";
+    }
+  }
+
+  data += "&cases="
+  data += JSON.stringify(testcases);
+  console.log(data);
+
+  var xhr = new XMLHttpRequest();
+  url = "https://web.njit.edu/~ybp7/CS490/middle.php";
+  xhr.open("post", url, true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+  // send the collected data as JSON
+  xhr.send(data);
+  //console.log("sent data: ");
+  //console.log(data);
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log("returned data: ");
+        console.log(xhr.responseText);
+        return xhr.responseText;
+    }
+  };
+
+  theButton.textContent = "Question added. Press again to add another.";
+  //window.history.back();
+};
+
+function filterSelection() {
+  var data = "request=getbank";
+
+  var sort = document.getElementById("sortSelect");
+  var sortDir = document.getElementById("sortDir");
+  var filter = document.getElementById("filterSelect");
+  var filterText = document.getElementById("filterText");
+
+  data += "&sort=";
+  data += sort.options[sort.selectedIndex].text;
+
+  data += "&filter=";
+  data += filter.options[filter.selectedIndex].text;
+
+  data += "&ascending=";
+  if(sortDir.selectedIndex == 0) {
+    data += "true";
+  } else {
+    data += "false";
+  }
+
+  data += "&filterText=";
+  data += filterText.value;
+
   // construct an HTTP request
   var xhr = new XMLHttpRequest();
   url = "https://web.njit.edu/~ybp7/CS490/middle.php";
-  xhr.open(form.method, url, true);
+  xhr.open("post", url, true);
   xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 
   // send the collected data as JSON
@@ -83,15 +373,12 @@ form.onsubmit =function (e) {
 
   xhr.onreadystatechange = function() {
     if (xhr.readyState == XMLHttpRequest.DONE) {
+        console.log("returned data: ");
         console.log(xhr.responseText);
+        populateBank(xhr.responseText);
     }
   };
-=======
-  var xhr = serverRequest(data);
-  alert("Question added.");
-  window.history.back();
->>>>>>> Stashed changes
-};
+}
 </script>
 
 </body>
