@@ -32,7 +32,6 @@
 
 			if(!$result)
 			{
-				echo "query is " . $query . "\n";
 				echo "Error no result";
 			}
 			return $result;
