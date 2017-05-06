@@ -2,6 +2,7 @@
 
 	function InsertQuestion($db, $question)
 	{
+		echo "insert question";
 		$table = "TestBank";
 
 		$method_name = $question["methodName"];
@@ -11,11 +12,12 @@
 		$parameter = $question["parameter"];
 		$description = $question["descr"];
 		$testcases = $question["cases"];
-		$type = "code";//used for filtering but currently not being utilized
 
 		$query = "INSERT INTO $table " . 
 								"(type, method_name, returnType, difficulty, parameters, description, testcases) " .
 				 				"VALUES ('$type', '$method_name', '$returnType', '$difficulty', '$parameter', '$description', '$testcases');";
+
+		echo "\n query: $query";
 		if(!$db->exec_query($query))
 		{
 			echo "Error";

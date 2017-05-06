@@ -2,12 +2,13 @@
 	
 	function InsertScore($db, $student_id, $test_id)
 	{
-		echo "insert score";
+		var_dump($_POST);
+		
 		$score = $_POST["score"];
 		$question_id = $_POST["question_id"];
 		$block = $_POST["jsonobj"];
 
-		var_dump($_POST);
+		$block = str_replace("'", "", $block);
 
 		$clear_score = "DELETE FROM StudentScores WHERE test_id = $test_id " . 
 				 "AND question_id = $question_id " .
@@ -16,7 +17,6 @@
 
 		$result = $db->exec_query($clear_score);
 
-		//$_POST["questid"], $_POST["score"], $_POST["comment"], $_POST["answer"];
 		
 		$insert_query = "INSERT INTO StudentScores (student_id, test_id, question_id, score, block)" .
 						" VALUES ($student_id, $test_id, $question_id, $score, '$block')";
@@ -31,7 +31,8 @@
 		$select_query = "SELECT * FROM studentScorePage";
 		$result = $db->exec_query($select_query);
 
-		$html = $result->fetch_array()["studentpage"];
+		$html = $result->fetch_array();
+		$html = $html["studentpage"];
 		return $html;
 
 		// $student_score_qry = "SELECT * FROM StudentScores WHERE student_id = $student_id AND test_id = $test_id";
@@ -99,7 +100,7 @@
 
 	function UpdateScore($db, $student_id, $test_id)
 	{	
-
+		//$delete_sp_query = "TRUNCATE "
 
 		$delete_query = "TRUNCATE studentScorePage";
 		$db->exec_query($delete_query);
