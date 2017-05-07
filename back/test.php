@@ -5,7 +5,8 @@
 
 		$query = "TRUNCATE Test";
 		$db->exec_query($query);
-
+		$query = "TRUNCATE StudentScores";
+		$db->exec_query($query);
 
 		$questions = explode(',', $ids);
 		$question_points = explode(',', $points);
