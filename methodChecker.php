@@ -142,6 +142,28 @@ $final_score = array(
 array_push($monster_array, $final_score);
 array_push($monster_array, $questionPair);
 array_push($responseArray, $methodPairs);
+// THIS IS THE PART THAT REPLACES THE ANSWER WITH NECESSARY CHANGES IT DOES NOT GRADE , GRADING IS ABOVE
+ $matches = array();
+preg_match_all('/[a-zA-Z]+[,|)]/', $exploded_answer[0], $matches);
+
+for($yes = 0; $yes < count($matches); $yes++){
+$matches[$yes] = str_replace(',','',$matches[$yes]);
+$matches[$yes] = str_replace(')','',$matches[$yes]);
+}
+//print_r($matches);
+$json_params = json_decode($decoded_json[$object_number]['parameters'], true);
+$exploded_paramName = explode(',' , $json_params['paramName']);// exploded paramName
+ $imploded_answer = implode('{', $exploded_answer);
+ echo $imploded_answer;
+ 
+for($no = 0; $no < count($exploded_paramName); $no++){
+//echo $exploded_paramName[$no];
+//print_r($matches);
+
+ $imploded_answer = str_replace($matches[0][$no],$exploded_paramName[$no],$imploded_answer);
+}
+echo $imploded_answer;
+$exploded_answer = explode('{',$imploded_answer);
 
 if($errorFlag == true){
 $method_header = $method_header . ' ' . $decoded_json[$object_number]['returnType'] .' '. $decoded_json[$object_number]['method_name'] . $generated_params_header;
@@ -153,7 +175,7 @@ $imploded_answer = implode('{', $exploded_answer);
 print_r($responseArray);
 //echo $imploded_answer;
 //echo "ABOUT TO INITIATE EXECUTER";
-//executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points);
+executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points);
 } else{
 
 $imploded_answer = implode('{', $exploded_answer);
@@ -161,7 +183,7 @@ print_r($responseArray);
 //echo $imploded_answer;
 
 //echo "Method Header : Perfect Score";
-//executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points);
+executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points);
 }
 //public static void testQuestion(int numberOne, int numberTwo){System.out.println("0");}
 //public static void anotherTest(int name){ System.out.println("4");
