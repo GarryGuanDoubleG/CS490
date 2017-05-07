@@ -2,7 +2,8 @@
 	
 	function InsertScore($db, $student_id, $test_id)
 	{
-		var_dump($_POST);
+		$delete_query = "TRUNCATE studentScorePage";
+		$db->exec_query($delete_query);
 		
 		$score = $_POST["score"];
 		$question_id = $_POST["question_id"];
@@ -82,7 +83,7 @@
 		$scores = array();
 		$i = 0;
 		
-		foreach($student_scores as $row)
+		while($row = $student_scores->fetch_array())
 		{
 			$scores[$i] = $row;
 			$question_id = $scores[$i]["question_id"];
