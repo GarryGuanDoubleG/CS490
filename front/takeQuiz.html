@@ -62,7 +62,7 @@
     var data = "request=submittest&";
     for(var i = 0; i < ids.length; i++) {
       data += "question_id" + (i+1) + "=" + ids[i].value + "&";
-      data += "answer" + (i+1) + "=" + answers[i].value + "&";
+      data += "answer" + (i+1) + "=" + encodeURIComponent(answers[i].value) + "&";
     }
 
     console.log("data sent: " + data);
@@ -132,11 +132,6 @@
     });
 
     html += "<button onclick=\"getAnswers()\" class=\"popup\"> Submit </button>";
-
-    html = html.replace(/plus_sign/g, "+");
-    html = html.replace(/minus_sign/g, "-");
-    html = html.replace(/division_sign/g, "/");
-    html = html.replace(/multiply_sign/g, "*");
 
     var page = document.getElementById('page');
     page.innerHTML = html;

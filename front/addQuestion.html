@@ -297,7 +297,7 @@ form.onsubmit =function (e) {
   var testcase = {};
   for(var i = 0; i < testIns.length; i++) {
 
-    inputs += testIns[i].value;
+    inputs += encodeURIComponent(testIns[i].value);
 
     if( (i+1) % paramNames.length == 0) {
       testcase["inputs"] = inputs;

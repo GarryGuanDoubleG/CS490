@@ -93,6 +93,7 @@
     //console.log(json);
     //onsole.log(json2);
 
+    console.log(json);
     for(var i = 0; i < json.length; i++) {
       var entry = json[i];
       var entry2 = json2[i];
@@ -107,19 +108,18 @@
         "<p> Write a method called <b>" + entry2['method_name'] + "</b>";
 
       if(params['paramName'] != "") {
-        html += " that takes the following parameter(s):<br>"
+        html += " that takes the following parameter(s):<br>";
 
         var pNames = params['paramName'].split(",");
         var pTypes = params['paramType'].split(",");
 
-        for(var i = 0; i < pNames.length; i++) {
-          html += "<b>" + pTypes[i] + " ";
-          html += pNames[i] + "</b><br>";
+        for(var k = 0; k < pNames.length; k++) {
+          html += "<b>" + pTypes[k] + " ";
+          html += pNames[k] + "</b><br>";
         }
       }
 
         html += "</p> <p> <br>" + entry['description'] + " </p> <br>" +
-
         "<p> Your Answer: </p> <br> " +
         "<p style=\"margin: 0 0 0 40;\"> " + entry['student_answer'] + "</p> <br> " +
         "<p> Grading: </p> <br> " +
@@ -133,7 +133,7 @@
           var piece = block[j];
           html += "<tr>" +
             "<td>"+piece['part']+"</td>" +
-            "<td><div class=\"point\"> <textarea class=\""
+            "<td><div class=\"point\"> <textarea class=\"";
             if(j%2 == 0) {
               html += "formArea2";
             } else {
@@ -143,7 +143,8 @@
             html += "\" cols=\"2\" rows=\"1\">" + piece['points'] +
             "</textarea></div></td>" +
             "<td>"+piece['grader']+"</td>" +
-            "<td><div name=\"comment\"> <textarea class=\""
+            "<td><div name=\"comment\"> <textarea class=\"";
+
             if(j%2 == 0) {
               html += "formArea2";
             } else {
