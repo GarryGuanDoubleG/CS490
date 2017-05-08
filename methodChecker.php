@@ -13,8 +13,9 @@ $generated_params_header = '(';
 $method_header = 'public static';
 $responseArray = [];
 
- 
-
+ //preg_replace('/\s+/S', " ", $send_answer_to_arian);
+$send_answer_to_arian = implode('{',$exploded_answer);
+//$send_answer_to_arian = preg_replace('/\s+/S', " ", $send_answer_to_arian);
  
  
 //echo ($decoded_json[$object_number]['testcases'];
@@ -26,7 +27,7 @@ if (strpos($exploded_answer[0], $decoded_json[$object_number]['method_name']) !=
 {
 $response = $response . 'Method name: correct. ';
 $score_tally = 10;
-$local_points = 2;
+$local_points = 20;
 
 } else { $errorFlag = true;
 $response = $response . 'Method name: incorrect. ';
@@ -81,8 +82,11 @@ if (strpos($exploded_answer[0], $params_compare_string) !== false)
       $errorFlag = true;
       }
 }
+// NEW LINES OF CODE POSSIBLY DELETE
 
-if($param_flag == true){ $score_tally = $score_tally - 3;  $response = $response . 'Error in parameters. ';}else {$local_points = $local_points + 3; $response = $response . ' Parameters matched. ';}
+
+
+if($param_flag == true){ $score_tally = $score_tally - 3;  $response = $response . 'Error in parameters. ';}else {$local_points = $local_points + 30; $response = $response . ' Parameters matched. ';}
 /*
 $intreturn = ' int ';
 $stringreturn = ' String ';
@@ -175,7 +179,7 @@ $imploded_answer = implode('{', $exploded_answer);
 print_r($responseArray);
 //echo $imploded_answer;
 //echo "ABOUT TO INITIATE EXECUTER";
-executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points);
+executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points, $send_answer_to_arian);
 } else{
 
 $imploded_answer = implode('{', $exploded_answer);
@@ -183,7 +187,7 @@ print_r($responseArray);
 //echo $imploded_answer;
 
 //echo "Method Header : Perfect Score";
-executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points);
+executer($decoded_json, $object_number, $imploded_answer, $responseArray, $monster_array, $local_points, $send_answer_to_arian);
 }
 //public static void testQuestion(int numberOne, int numberTwo){System.out.println("0");}
 //public static void anotherTest(int name){ System.out.println("4");
