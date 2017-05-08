@@ -94,6 +94,7 @@
     //onsole.log(json2);
 
     console.log(json);
+    console.log(json2);
     for(var i = 0; i < json.length; i++) {
       var entry = json[i];
       var entry2 = json2[i];
@@ -104,7 +105,7 @@
 
 
       html += "<div class=\"card\"> " +
-        "<h2 class=\"split-para\"> Problem " + (i+1) + " <span class=\"papaPoints\"> " + entry['score'] + "/10 </span></h2> <br> " +
+        "<h2 class=\"split-para\"> Problem " + (i+1) + " <span class=\"papaPoints\"> " + entry['score'] + "/"+entry2['points']+" </span></h2> <br> " +
         "<p> Write a method called <b>" + entry2['method_name'] + "</b>";
 
       if(params['paramName'] != "") {
