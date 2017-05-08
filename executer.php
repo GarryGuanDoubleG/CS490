@@ -1,9 +1,11 @@
 <?php
-function executer($decoded_json, $object_number, $answer, $responseArray, $monster_array, $score_tally){
+function executer($decoded_json, $object_number, $answer, $responseArray, $monster_array, $score_tally, $send_answer_to_arian){
  
 
 
-
+  
+  
+  
   $scaler = 0;
   $score_executer = 0;
   $grader_response = '';
@@ -23,6 +25,8 @@ function executer($decoded_json, $object_number, $answer, $responseArray, $monst
   for($i = 0; $i < count($json_inputs); $i++){
   $params_to_be_executed = '(';
     $input_count = count($json_inputs);
+    
+    
     $exploded_inputs = explode(',',$json_inputs[$i]['inputs']);
     //$exploded_outputs = explode(',', $json_inputs[$i]['output'])
     
@@ -38,7 +42,7 @@ function executer($decoded_json, $object_number, $answer, $responseArray, $monst
 
     if($j == $oneMinus){
     //  if(strpos($exploded_inputs[$j], 'plus_sign') !== false){$exploded_inputs[$j] = ' \+ ' ;}
-      
+
       if(strpos($exploded_paramType[$j], 'String') !== false){
         $params_to_be_executed = $params_to_be_executed . '"' . $exploded_inputs[$j] . '")';
       }else {
@@ -50,7 +54,9 @@ function executer($decoded_json, $object_number, $answer, $responseArray, $monst
     }else{
       //if(strpos($exploded_inputs[$j], 'plus_sign') !== false){$exploded_inputs[$j] = ' \+ ';}
       if(strpos($exploded_paramType[$j], 'String') !== false){
-        $params_to_be_executed = $params_to_be_executed . '"' . $exploded_inputs[$j] . '",';} //elseif(strpos($exploded_paramType[$j
+      
+      if(strpos($exploded_inputs[$j], ' ') !== false){ $exploded_inputs[$j] = "+";}
+        $params_to_be_executed = $params_to_be_executed . '"' . $exploded_inputs[$j] . '",'; }
         else {
           $params_to_be_executed = $params_to_be_executed . $exploded_inputs[$j] . ',';}
 
@@ -62,8 +68,7 @@ function executer($decoded_json, $object_number, $answer, $responseArray, $monst
 
 // echo $params_to_be_executed; 
   }
-  
-
+echo $params_to_be_executed;
   $firstHalf = "public class HelloWorld {
 
       public static void main(String[] args) { ";
@@ -99,17 +104,28 @@ $scaler = 5/$input_count;
     $outcome = [];
     exec('/afs/cad/linux/java8/bin/java HelloWorld', $outcome); 
     if(strpos($outcome[0], $json_inputs[$i]['output'] ) !== false){
+    $score_executer = $scaler * 1 + $score_executer;
+    $score_tally = $score_tally + $score_executer;
      
-    echo "Matched and compiled.";} else { echo "Compiled but no match"; }
-    }else{ echo "No compile";}
+    echo "Matched and compiled."; $grader_response = $grader_response . ' Matched and compiled'; } else { echo "Compiled but no match"; $grader_response = $grader_response . ' Compiled but no match ';
+     $score_executer =  $scaler * (1/2) + $score_executer;  $score_tally = $score_tally + $score_executer;
+     }
+    }else{ echo "No compile"; $grader_response = $grader_response . ' No compile '; }
+     
+     $score_executer = $score_executer * 100;
+     $score_executer = $score_executer / 10;
+     $score_executer = $score_executer * $decoded_json[$object_number]['points'];
+     $sore_executer = $score_executer / 100;
      $testcaseArray = array(
   'part' => 'Test Case',
-  'points' => 10,
-  'grader' => "Front End Recieved.",
+  'points' => $score_executer,
+  'grader' => $grader_response,
   'comments' => '',
 
   );
+  $grader_response = '';
   array_push($responseArray, $testcaseArray);
+  $score_executer = 0;
   }
   //SEND THE DATA HERE
   //print_r($responseArray);
@@ -117,6 +133,17 @@ $scaler = 5/$input_count;
    'block' => $responseArray,
 
 );
+
+$arians_answer = array( 'answer' => $send_answer_to_arian);
+array_push($blockArray, $arians_answer);
+
+$score_final = $score_tally;
+$score_final = $score_final * 100;
+$score_final = $score_final / 10;
+$score_final = $score_final * $decoded_json[$object_number]['points'];
+$score_final = $score_final / 100;
+//echo $score_final;
+print_r($blockArray);
 $garry_final_grading = json_encode($blockArray);
 $ch = curl_init();
   curl_setopt($ch, CURLOPT_URL,"https://web.njit.edu/~gg99/cs490/back.php");
@@ -124,7 +151,7 @@ $ch = curl_init();
 
 
   curl_setopt($ch, CURLOPT_POSTFIELDS,
-              "request=givescore&jsonobj=".$garry_final_grading."&score="."10"."&question_id=".$decoded_json[$object_number]['question_id']);
+              "request=givescore&jsonobj=".$garry_final_grading."&score=".$score_final."&question_id=".$decoded_json[$object_number]['question_id']);
 
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
@@ -134,6 +161,7 @@ $ch = curl_init();
   curl_close ($ch);
 
   }
+  
   /*
  $imploded_coutcome = implode(" ", $coutcome);
   if($returnval == 0){
@@ -200,5 +228,5 @@ $ch = curl_init();
 //$encoded_response = json_encode($responseArray);
 //echo $encoded_response;
 //echo $params_to_be_executed;
-
+*/
 ?>
